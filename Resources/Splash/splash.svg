@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+=== APPLICATION SPLASH SCREEN ===
+File: splash.svg
+Purpose: Startup screen displayed during app initialization
+Dimensions: 456x456px (square aspect ratio recommended)
+Format: SVG vector graphics for scalability
+
+Design Elements:
+- Consistent brand gradient background matching app icon
+- Central logo/icon matching app icon design
+- Application name text with brand typography
+- Animated loading indicators for user feedback
+- Subtle glow effects for premium appearance
+
+Platform Usage:
+- Android: Integrated with splash screen API
+- iOS: Converted to Launch Screen storyboard
+- Windows: Used for app startup splash screen
+
+User Experience Considerations:
+- Quick loading perception through animation
+- Brand recognition through consistent visual elements
+- Accessibility through sufficient contrast ratios
+- Responsive design for various screen sizes
+
+Naming Convention: splash.svg (standard .NET MAUI convention)
+-->
+<svg width="456" height="456" viewBox="0 0 456 456" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <!-- Brand gradient definitions matching app icon for visual consistency -->
+    <defs>
+        <linearGradient id="backgroundGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="textGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#f8f9fa;stop-opacity:0.9" />
+        </linearGradient>
+        <radialGradient id="glowEffect" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.3" />
+            <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0" />
+        </radialGradient>
+    </defs>
+    
+    <!-- Background with consistent brand gradient -->
+    <rect x="0" y="0" width="456" height="456" fill="url(#backgroundGradient)"/>
+    
+    <!-- Subtle radial glow effect for premium appearance -->
+    <circle cx="228" cy="228" r="200" fill="url(#glowEffect)" opacity="0.4"/>
+    
+    <!-- Main logo/icon centered for brand recognition -->
+    <g transform="translate(228, 180)">
+        <!-- Stylized "H" matching app icon -->
+        <g opacity="0.9">
+            <!-- Left vertical bar -->
+            <rect x="-60" y="-60" width="18" height="120" fill="url(#textGradient)" rx="9"/>
+            <!-- Right vertical bar -->
+            <rect x="42" y="-60" width="18" height="120" fill="url(#textGradient)" rx="9"/>
+            <!-- Horizontal connecting bar -->
+            <rect x="-42" y="-9" width="84" height="18" fill="url(#textGradient)" rx="9"/>
+            
+            <!-- Decorative elements -->
+            <circle cx="-51" cy="-45" r="6" fill="url(#textGradient)" opacity="0.8"/>
+            <circle cx="51" cy="-45" r="6" fill="url(#textGradient)" opacity="0.8"/>
+            <circle cx="0" cy="45" r="8" fill="url(#textGradient)" opacity="0.7"/>
+        </g>
+    </g>
+    
+    <!-- Application name with brand typography -->
+    <g transform="translate(228, 300)">
+        <text x="0" y="0" text-anchor="middle" font-family="Arial, sans-serif" font-size="32" font-weight="300" fill="url(#textGradient)" opacity="0.9">
+            HelloWorld
+        </text>
+    </g>
+    
+    <!-- Animated loading indicators for user feedback -->
+    <g transform="translate(228, 360)" opacity="0.6">
+        <circle cx="-20" cy="0" r="4" fill="url(#textGradient)">
+            <animate attributeName="opacity" values="0.3;1;0.3" dur="1.5s" repeatCount="indefinite" begin="0s"/>
+        </circle>
+        <circle cx="0" cy="0" r="4" fill="url(#textGradient)">
+            <animate attributeName="opacity" values="0.3;1;0.3" dur="1.5s" repeatCount="indefinite" begin="0.5s"/>
+        </circle>
+        <circle cx="20" cy="0" r="4" fill="url(#textGradient)">
+            <animate attributeName="opacity" values="0.3;1;0.3" dur="1.5s" repeatCount="indefinite" begin="1s"/>
+        </circle>
+    </g>
+</svg>

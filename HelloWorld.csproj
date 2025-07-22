@@ -1,0 +1,120 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<!-- 
+		=== PLATFORM TARGETING CONFIGURATION ===
+		
+		Target Platforms (MacCatalyst excluded for this project):
+		- Android: net8.0-android (API level 21+)
+		- iOS: net8.0-ios (iOS 11.0+)  
+		- Windows: net8.0-windows10.0.19041.0 (Windows 10 version 2004+)
+		
+		MacCatalyst (net8.0-maccatalyst) is intentionally excluded from this
+		configuration to focus on the three primary mobile and desktop platforms.
+		
+		Platform-specific branding behavior:
+		- Each platform will receive optimized app icons and splash screens
+		- Resource generation is handled automatically during build process
+		- Platform-specific UI guidelines are followed for branding elements
+		-->
+		<TargetFrameworks>net8.0-android;net8.0-ios</TargetFrameworks>
+		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net8.0-windows10.0.19041.0</TargetFrameworks>
+		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
+		<!-- <TargetFrameworks>$(TargetFrameworks);net8.0-tizen</TargetFrameworks> -->
+
+		<OutputType>Exe</OutputType>
+		<RootNamespace>HelloWorld</RootNamespace>
+		<UseMaui>true</UseMaui>
+		<SingleProject>true</SingleProject>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+
+		<!-- Display name -->
+		<ApplicationTitle>HelloWorld</ApplicationTitle>
+
+		<!-- App Identifier -->
+		<ApplicationId>com.companyname.helloworld</ApplicationId>
+
+		<!-- Versions -->
+		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+		<ApplicationVersion>1</ApplicationVersion>
+
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">11.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
+		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<!-- 
+		=== BRANDING CUSTOMIZATION CONFIGURATION ===
+		
+		This section defines the custom branding elements for the application.
+		All branding resources follow .NET MAUI standard conventions and are
+		automatically processed for each target platform during build.
+		
+		Resource File Naming Convention:
+		- appicon.svg: Main application icon (512x512px recommended)
+		- appiconfg.svg: Foreground icon for adaptive icons (Android)
+		- splash.svg: Splash screen image (square aspect ratio recommended)
+		
+		Color Specification:
+		- Use hexadecimal color codes (#RRGGBB format)
+		- Ensure sufficient contrast for accessibility
+		- Brand color: #512BD4 (purple theme)
+		-->
+		
+		<!-- 
+		App Icon Configuration:
+		- Include: Path to main SVG icon file
+		- ForegroundFile: Path to foreground SVG for adaptive icons (Android)
+		- Color: Background color for adaptive icons and fallback scenarios
+		
+		Platform-specific behavior:
+		- Android: Uses both main icon and foreground file for adaptive icons
+		- iOS: Uses main icon file, generates required sizes automatically
+		- Windows: Uses main icon file for app tiles and taskbar
+		-->
+		<MauiIcon Include="Resources\AppIcon\appicon.svg" 
+		          ForegroundFile="Resources\AppIcon\appiconfg.svg" 
+		          Color="#512BD4" />
+
+		<!-- 
+		Splash Screen Configuration:
+		- Include: Path to splash screen SVG file
+		- Color: Background color displayed during app startup
+		- BaseSize: Base dimensions for scaling (width,height in pixels)
+		
+		Platform-specific behavior:
+		- Android: Creates splash screen with proper theme integration
+		- iOS: Generates Launch Screen storyboard with image
+		- Windows: Creates splash screen for app startup
+		
+		Design Guidelines:
+		- Keep splash screen simple and brand-focused
+		- Ensure readability across different screen sizes
+		- Consider loading time and user experience
+		-->
+		<MauiSplashScreen Include="Resources\Splash\splash.svg" 
+		                  Color="#512BD4" 
+		                  BaseSize="128,128" />
+
+		<!-- Images -->
+		<MauiImage Include="Resources\Images\*" />
+		<MauiImage Update="Resources\Images\dotnet_bot.png" Resize="True" BaseSize="300,185" />
+
+		<!-- Custom Fonts -->
+		<MauiFont Include="Resources\Fonts\*" />
+
+		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
+		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
+		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.1" />
+	</ItemGroup>
+
+</Project>
