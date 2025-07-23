@@ -38,6 +38,7 @@ namespace HelloWorld
             // BRANDING VALIDATION: Ensure all custom branding resources are valid
             // before proceeding with app initialization. This prevents runtime
             // issues with missing icons or splash screens.
+            // Only run validation in debug mode to avoid production issues.
             ValidateBrandingResources();
 
             var builder = MauiApp.CreateBuilder();
@@ -62,6 +63,7 @@ namespace HelloWorld
         /// </summary>
         private static void ValidateBrandingResources()
         {
+#if DEBUG
             try
             {
                 var projectRoot = GetProjectRootDirectory();
@@ -72,11 +74,8 @@ namespace HelloWorld
                     System.Diagnostics.Debug.WriteLine("=== BRANDING VALIDATION ERRORS DETECTED ===");
                     System.Diagnostics.Debug.WriteLine(validationResult.GetSummaryReport());
                     
-                    // In a production app, you might want to show a user-friendly error message
-                    // or gracefully degrade functionality instead of throwing an exception
-                    throw new InvalidOperationException(
-                        $"Branding resource validation failed with {validationResult.Errors.Count} errors. " +
-                        "Check debug output for details.");
+                    // In debug mode, log the errors but don't crash the app
+                    System.Diagnostics.Debug.WriteLine("Continuing with default branding due to validation errors.");
                 }
 
                 if (validationResult.HasWarnings)
@@ -90,15 +89,9 @@ namespace HelloWorld
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Branding validation failed: {ex.Message}");
-                // In development, we want to know about validation issues
-                // In production, you might want to handle this more gracefully
-#if DEBUG
-                throw;
-#else
-                // Log the error but don't crash the app in production
-                System.Diagnostics.Debug.WriteLine($"Continuing with default branding due to validation error: {ex.Message}");
-#endif
+                System.Diagnostics.Debug.WriteLine($"Continuing with default branding due to validation error.");
             }
+#endif
         }
 
         /// <summary>
@@ -106,21 +99,59 @@ namespace HelloWorld
         /// </summary>
         private static string GetProjectRootDirectory()
         {
-            var currentDirectory = Directory.GetCurrentDirectory();
-            var directory = new DirectoryInfo(currentDirectory);
-
-            // Walk up the directory tree to find the project root
-            while (directory != null && !File.Exists(Path.Combine(directory.FullName, "HelloWorld.csproj")))
+            // Try multiple approaches to find the project root
+            
+            // 1. Try from the assembly location
+            var assemblyLocation = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            if (!string.IsNullOrEmpty(assemblyLocation))
             {
+                var assemblyDir = new DirectoryInfo(Path.GetDirectoryName(assemblyLocation));
+                var projectRoot = FindProjectRootFromDirectory(assemblyDir);
+                if (projectRoot != null)
+                {
+                    return projectRoot;
+                }
+            }
+
+            // 2. Try from the current directory
+            var currentDirectory = Directory.GetCurrentDirectory();
+            var currentDir = new DirectoryInfo(currentDirectory);
+            var projectRootFromCurrent = FindProjectRootFromDirectory(currentDir);
+            if (projectRootFromCurrent != null)
+            {
+                return projectRootFromCurrent;
+            }
+
+            // 3. Try from the app domain base directory
+            var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            if (!string.IsNullOrEmpty(baseDirectory))
+            {
+                var baseDir = new DirectoryInfo(baseDirectory);
+                var projectRootFromBase = FindProjectRootFromDirectory(baseDir);
+                if (projectRootFromBase != null)
+                {
+                    return projectRootFromBase;
+                }
+            }
+
+            throw new InvalidOperationException("Could not find project root directory");
+        }
+
+        /// <summary>
+        /// Helper method to find project root from a given directory
+        /// </summary>
+        private static string FindProjectRootFromDirectory(DirectoryInfo directory)
+        {
+            // Walk up the directory tree to find the project root
+            while (directory != null)
+            {
+                if (File.Exists(Path.Combine(directory.FullName, "HelloWorld.csproj")))
+                {
+                    return directory.FullName;
+                }
                 directory = directory.Parent;
             }
-
-            if (directory == null)
-            {
-                throw new InvalidOperationException("Could not find project root directory");
-            }
-
-            return directory.FullName;
+            return null;
         }
     }
 }

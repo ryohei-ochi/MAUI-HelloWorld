@@ -44,6 +44,30 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
+		
+		<!-- iOS specific settings to help with resource processing -->
+		<EnableDefaultMauiItems Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">true</EnableDefaultMauiItems>
+		<MauiResizetizer Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">true</MauiResizetizer>
+		<GenerateResourceDesigner>false</GenerateResourceDesigner>
+		<Platforms>AnyCPU;x64</Platforms>
+	</PropertyGroup>
+
+	<!-- iOS specific configuration -->
+	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
+		<CodesignKey>iPhone Developer</CodesignKey>
+		<CodesignProvision />
+		<ArchiveOnBuild>false</ArchiveOnBuild>
+		<CreatePackage>false</CreatePackage>
+		<PublishTrimmed>true</PublishTrimmed>
+		<OptimizePNGs>true</OptimizePNGs>
+		<Optimize Condition="'$(Configuration)' == 'Release'">true</Optimize>
+		<DebugType>portable</DebugType>
+		<DeviceSpecificBuild>true</DeviceSpecificBuild>
+		<!-- Modern iOS build settings -->
+		<RuntimeIdentifier>ios-arm64</RuntimeIdentifier>
+		<UseInterpreter Condition="'$(Configuration)' == 'Debug'">True</UseInterpreter>
+		<MtouchLink>SdkOnly</MtouchLink>
+		<MtouchDebug Condition="'$(Configuration)' == 'Debug'">true</MtouchDebug>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -76,9 +100,7 @@
 		- iOS: Uses main icon file, generates required sizes automatically
 		- Windows: Uses main icon file for app tiles and taskbar
 		-->
-		<MauiIcon Include="Resources\AppIcon\appicon.svg" 
-		          ForegroundFile="Resources\AppIcon\appiconfg.svg" 
-		          Color="#512BD4" />
+		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" ForegroundScale="0.65" />
 
 		<!-- 
 		Splash Screen Configuration:
@@ -96,9 +118,7 @@
 		- Ensure readability across different screen sizes
 		- Consider loading time and user experience
 		-->
-		<MauiSplashScreen Include="Resources\Splash\splash.svg" 
-		                  Color="#512BD4" 
-		                  BaseSize="128,128" />
+		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" Resize="true" />
 
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
@@ -116,5 +136,58 @@
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.1" />
 	</ItemGroup>
+
+	<!-- iOS specific resource handling -->
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
+		<BundleResource Include="Resources\AppIcon\appicon.svg" />
+		<BundleResource Include="Resources\AppIcon\appiconfg.svg" />
+		<BundleResource Include="Resources\Splash\splash.svg" />
+	</ItemGroup>
+
+	<!-- iOS Info.plist settings -->
+	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
+		<!-- Skip MauiInfo.plist generation -->
+		<GenerateMauiInfo>false</GenerateMauiInfo>
+		
+		<!-- Define Info.plist values directly -->
+		<MauiPlist>
+			<dict>
+				<key>LSRequiresIPhoneOS</key>
+				<true />
+				<key>UIDeviceFamily</key>
+				<array>
+					<integer>1</integer>
+					<integer>2</integer>
+				</array>
+				<key>UIRequiredDeviceCapabilities</key>
+				<array>
+					<string>arm64</string>
+				</array>
+				<key>UISupportedInterfaceOrientations</key>
+				<array>
+					<string>UIInterfaceOrientationPortrait</string>
+					<string>UIInterfaceOrientationLandscapeLeft</string>
+					<string>UIInterfaceOrientationLandscapeRight</string>
+				</array>
+				<key>UISupportedInterfaceOrientations~ipad</key>
+				<array>
+					<string>UIInterfaceOrientationPortrait</string>
+					<string>UIInterfaceOrientationPortraitUpsideDown</string>
+					<string>UIInterfaceOrientationLandscapeLeft</string>
+					<string>UIInterfaceOrientationLandscapeRight</string>
+				</array>
+				<key>XSAppIconAssets</key>
+				<string>Assets.xcassets/appicon.appiconset</string>
+				<key>UILaunchStoryboardName</key>
+				<string>MauiSplash</string>
+				<key>ITSAppUsesNonExemptEncryption</key>
+				<false />
+			</dict>
+		</MauiPlist>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(TargetFramework)'=='net8.0-ios'">
+	  <CodesignKey>Apple Development: Created via API (B45N9898GL)</CodesignKey>
+	  <CodesignProvision>VS: WildCard Development</CodesignProvision>
+	</PropertyGroup>
 
 </Project>
