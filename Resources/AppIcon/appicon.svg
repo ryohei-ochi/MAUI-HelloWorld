@@ -3,24 +3,24 @@
 === MAIN APPLICATION ICON ===
 File: appicon.svg
 Purpose: Primary application icon for all platforms
-Dimensions: 456x456px (recommended 512x512px for production)
+Dimensions: 512x512px (optimized for high-resolution displays including Retina)
 Format: SVG vector graphics for scalability
 
 Design Elements:
 - Brand gradient background (#667eea to #764ba2)
 - Stylized "H" letterform representing "HelloWorld"
-- Modern rounded corners (72px radius)
+- Modern rounded corners (80px radius)
 - White/light gradient for icon elements
 - Decorative accent circles for visual interest
 
 Platform Usage:
 - Android: Base for adaptive icon generation
-- iOS: Automatically scaled for all required sizes
+- iOS: Automatically scaled for all required sizes including Retina Display (iPhone 8)
 - Windows: Used for app tiles and taskbar icons
 
 Naming Convention: appicon.svg (standard .NET MAUI convention)
 -->
-<svg width="456" height="456" viewBox="0 0 456 456" version="1.1" xmlns="http://www.w3.org/2000/svg">
+<svg width="512" height="512" viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg">
     <!-- Brand gradient definitions for consistent visual identity -->
     <defs>
         <linearGradient id="backgroundGradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -34,20 +34,20 @@ Naming Convention: appicon.svg (standard .NET MAUI convention)
     </defs>
     
     <!-- Background with brand gradient and rounded corners -->
-    <rect x="0" y="0" width="456" height="456" fill="url(#backgroundGradient)" rx="72" ry="72"/>
+    <rect x="0" y="0" width="512" height="512" fill="url(#backgroundGradient)" rx="80" ry="80"/>
     
     <!-- Main icon shape - stylized "H" letterform for HelloWorld branding -->
-    <g transform="translate(228, 228)">
+    <g transform="translate(256, 256)">
         <!-- Left vertical bar -->
-        <rect x="-80" y="-100" width="24" height="200" fill="url(#iconGradient)" rx="12"/>
+        <rect x="-90" y="-112" width="28" height="224" fill="url(#iconGradient)" rx="14"/>
         <!-- Right vertical bar -->
-        <rect x="56" y="-100" width="24" height="200" fill="url(#iconGradient)" rx="12"/>
+        <rect x="62" y="-112" width="28" height="224" fill="url(#iconGradient)" rx="14"/>
         <!-- Horizontal connecting bar -->
-        <rect x="-56" y="-12" width="112" height="24" fill="url(#iconGradient)" rx="12"/>
+        <rect x="-62" y="-14" width="124" height="28" fill="url(#iconGradient)" rx="14"/>
         
         <!-- Decorative elements -->
-        <circle cx="-68" cy="-80" r="8" fill="url(#iconGradient)" opacity="0.7"/>
-        <circle cx="68" cy="-80" r="8" fill="url(#iconGradient)" opacity="0.7"/>
-        <circle cx="0" cy="80" r="12" fill="url(#iconGradient)" opacity="0.6"/>
+        <circle cx="-76" cy="-90" r="10" fill="url(#iconGradient)" opacity="0.7"/>
+        <circle cx="76" cy="-90" r="10" fill="url(#iconGradient)" opacity="0.7"/>
+        <circle cx="0" cy="90" r="14" fill="url(#iconGradient)" opacity="0.6"/>
     </g>
 </svg>

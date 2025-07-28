@@ -165,6 +165,34 @@ public class TestRunner
         System.Diagnostics.Debug.WriteLine("All Branding Integration tests passed successfully!");
     }
 
+    public static void RuniOSIconTests()
+    {
+        System.Diagnostics.Debug.WriteLine("=== iOS App Icon Verification Tests ===");
+        System.Diagnostics.Debug.WriteLine("");
+
+        var testResults = iOSIconTests.ExecuteAllTests();
+        
+        System.Diagnostics.Debug.WriteLine("");
+        System.Diagnostics.Debug.WriteLine("=== Test Results Summary ===");
+        System.Diagnostics.Debug.WriteLine($"Total Tests: {testResults.TotalTests}");
+        System.Diagnostics.Debug.WriteLine($"Passed: {testResults.PassedTests}");
+        System.Diagnostics.Debug.WriteLine($"Failed: {testResults.FailedTests}");
+        
+        if (testResults.FailedTests > 0)
+        {
+            System.Diagnostics.Debug.WriteLine("");
+            System.Diagnostics.Debug.WriteLine("Failed Tests:");
+            foreach (var failure in testResults.Failures)
+            {
+                System.Diagnostics.Debug.WriteLine($"- {failure}");
+            }
+            
+            throw new Exception($"iOS App Icon tests failed: {testResults.FailedTests} out of {testResults.TotalTests} tests failed");
+        }
+        
+        System.Diagnostics.Debug.WriteLine("All iOS App Icon tests passed successfully!");
+    }
+
     public static void RunAllBrandingTests()
     {
         System.Diagnostics.Debug.WriteLine("=== App Branding Verification Tests ===");
@@ -173,6 +201,8 @@ public class TestRunner
         try
         {
             RunAppIconTests();
+            System.Diagnostics.Debug.WriteLine("");
+            RuniOSIconTests();
             System.Diagnostics.Debug.WriteLine("");
             RunSplashScreenTests();
             System.Diagnostics.Debug.WriteLine("");

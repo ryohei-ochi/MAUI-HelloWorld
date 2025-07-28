@@ -49,6 +49,8 @@
 		<EnableDefaultMauiItems Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">true</EnableDefaultMauiItems>
 		<MauiResizetizer Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">true</MauiResizetizer>
 		<GenerateResourceDesigner>false</GenerateResourceDesigner>
+		<MauiGenerateAppIcons>true</MauiGenerateAppIcons>
+		<MauiGenerateSplashScreens>true</MauiGenerateSplashScreens>
 		<Platforms>AnyCPU;x64</Platforms>
 	</PropertyGroup>
 
@@ -68,6 +70,10 @@
 		<UseInterpreter Condition="'$(Configuration)' == 'Debug'">True</UseInterpreter>
 		<MtouchLink>SdkOnly</MtouchLink>
 		<MtouchDebug Condition="'$(Configuration)' == 'Debug'">true</MtouchDebug>
+		<!-- Retina Display support -->
+		<MtouchHighResolution>true</MtouchHighResolution>
+		<MtouchEnableSGenConc>true</MtouchEnableSGenConc>
+		<MtouchExtraArgs>--optimize=high-resolution-images</MtouchExtraArgs>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -100,7 +106,10 @@
 		- iOS: Uses main icon file, generates required sizes automatically
 		- Windows: Uses main icon file for app tiles and taskbar
 		-->
-		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" ForegroundScale="0.65" />
+		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" ForegroundScale="0.65" BaseSize="512,512">
+			<Resize>True</Resize>
+			<TintColor>#512BD4</TintColor>
+		</MauiIcon>
 
 		<!-- 
 		Splash Screen Configuration:
@@ -142,49 +151,23 @@
 		<BundleResource Include="Resources\AppIcon\appicon.svg" />
 		<BundleResource Include="Resources\AppIcon\appiconfg.svg" />
 		<BundleResource Include="Resources\Splash\splash.svg" />
+		<!-- Include Assets.xcassets for iOS -->
+		<BundleResource Include="Platforms\iOS\Resources\Assets.xcassets\**\*" />
 	</ItemGroup>
-
-	<!-- iOS Info.plist settings -->
+	
+	<!-- Additional iOS settings for high-quality icon generation -->
 	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
-		<!-- Skip MauiInfo.plist generation -->
-		<GenerateMauiInfo>false</GenerateMauiInfo>
-		
-		<!-- Define Info.plist values directly -->
-		<MauiPlist>
-			<dict>
-				<key>LSRequiresIPhoneOS</key>
-				<true />
-				<key>UIDeviceFamily</key>
-				<array>
-					<integer>1</integer>
-					<integer>2</integer>
-				</array>
-				<key>UIRequiredDeviceCapabilities</key>
-				<array>
-					<string>arm64</string>
-				</array>
-				<key>UISupportedInterfaceOrientations</key>
-				<array>
-					<string>UIInterfaceOrientationPortrait</string>
-					<string>UIInterfaceOrientationLandscapeLeft</string>
-					<string>UIInterfaceOrientationLandscapeRight</string>
-				</array>
-				<key>UISupportedInterfaceOrientations~ipad</key>
-				<array>
-					<string>UIInterfaceOrientationPortrait</string>
-					<string>UIInterfaceOrientationPortraitUpsideDown</string>
-					<string>UIInterfaceOrientationLandscapeLeft</string>
-					<string>UIInterfaceOrientationLandscapeRight</string>
-				</array>
-				<key>XSAppIconAssets</key>
-				<string>Assets.xcassets/appicon.appiconset</string>
-				<key>UILaunchStoryboardName</key>
-				<string>MauiSplash</string>
-				<key>ITSAppUsesNonExemptEncryption</key>
-				<false />
-			</dict>
-		</MauiPlist>
+		<OptimizePNGs>true</OptimizePNGs>
+		<MtouchHighResolution>true</MtouchHighResolution>
+		<MtouchNoSymbolStrip>true</MtouchNoSymbolStrip>
+		<MtouchFastDev>true</MtouchFastDev>
+		<_CodesignCertificateName>iPhone Developer</_CodesignCertificateName>
+		<IOSDebugOverWiFi>true</IOSDebugOverWiFi>
+		<MtouchDebug>true</MtouchDebug>
+		<MtouchProfiling>true</MtouchProfiling>
 	</PropertyGroup>
+
+
 	<PropertyGroup Condition="'$(TargetFramework)'=='net8.0-ios'">
 	  <CodesignKey>Apple Development: Created via API (B45N9898GL)</CodesignKey>
 	  <CodesignProvision>VS: WildCard Development</CodesignProvision>

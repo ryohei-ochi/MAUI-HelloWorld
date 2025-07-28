@@ -26,8 +26,11 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>XSAppIconAssets</key>
-	<string>Assets.xcassets/appicon.appiconset</string>
+	<key>CFBundleIconName</key>
+	<string>AppIcon</string>
+	<!-- Ensure proper icon rendering on Retina Display devices -->
+	<key>UIPrerenderedIcon</key>
+	<true/>
 	<key>UILaunchStoryboardName</key>
 	<string>MauiSplash</string>
 </dict>

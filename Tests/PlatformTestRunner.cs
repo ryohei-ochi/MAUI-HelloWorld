@@ -18,12 +18,40 @@ public class PlatformTestRunner
             // Run platform-specific tests
             TestRunner.RunPlatformSpecificTests();
             
+            // Run iOS-specific tests if on iOS platform
+            #if __IOS__
+            TestRunner.RuniOSIconTests();
+            #endif
+            
             System.Diagnostics.Debug.WriteLine("");
             System.Diagnostics.Debug.WriteLine("=== Platform-Specific Tests Completed Successfully ===");
         }
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"Platform-specific tests failed: {ex.Message}");
+            System.Diagnostics.Debug.WriteLine("");
+            System.Diagnostics.Debug.WriteLine("Stack trace:");
+            System.Diagnostics.Debug.WriteLine(ex.StackTrace);
+            throw;
+        }
+    }
+    
+    public static void RuniOSTests()
+    {
+        System.Diagnostics.Debug.WriteLine("=== iOS-Specific Verification Test Runner ===");
+        System.Diagnostics.Debug.WriteLine("");
+
+        try
+        {
+            // Run iOS-specific tests
+            TestRunner.RuniOSIconTests();
+            
+            System.Diagnostics.Debug.WriteLine("");
+            System.Diagnostics.Debug.WriteLine("=== iOS-Specific Tests Completed Successfully ===");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"iOS-specific tests failed: {ex.Message}");
             System.Diagnostics.Debug.WriteLine("");
             System.Diagnostics.Debug.WriteLine("Stack trace:");
             System.Diagnostics.Debug.WriteLine(ex.StackTrace);

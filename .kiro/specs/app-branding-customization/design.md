@@ -2,7 +2,7 @@
 
 ## 概要
 
-この設計文書では、.NET MAUIアプリケーションにおけるアプリアイコンとスプラッシュスクリーンのカスタマイズ機能の実装方法を定義します。MacCatalystを対象プラットフォームから除外し、Android、iOS、Windowsプラットフォームでのブランディング要素のカスタマイズを実現します。
+この設計文書では、.NET MAUIアプリケーションにおけるアプリアイコンとスプラッシュスクリーンのカスタマイズ機能の実装方法を定義します。MacCatalystを対象プラットフォームから除外し、Android、iOS、Windowsプラットフォームでのブランディング要素のカスタマイズを実現します。特にiPhone 8などのRetina Displayデバイス向けの高解像度アイコン対応を強化します。
 
 ## アーキテクチャ
 
@@ -19,6 +19,19 @@ Resources/
 │   └── appiconfg.svg (フォアグラウンドアイコン)
 └── Splash/
     └── splash.svg (スプラッシュスクリーン画像)
+```
+
+### iOS固有のリソース構造（オプション）
+```
+Platforms/
+└── iOS/
+    └── Resources/
+        └── Assets.xcassets/
+            └── appicon.appiconset/
+                ├── Contents.json (アイコン設定ファイル)
+                ├── Icon-60@2x.png (iPhone 8用 120x120px)
+                ├── Icon-60@3x.png (iPhone X以降用 180x180px)
+                └── [その他のサイズ別アイコン]
 ```
 
 ## コンポーネントとインターフェース
@@ -38,11 +51,16 @@ Resources/
 - SVGベースのアダプティブアイコン生成
 - プラットフォーム固有のアイコンサイズ自動生成
 - フォアグラウンド/バックグラウンド分離サポート
+- Retina Display対応の高解像度アイコン生成
 
 **設定パラメータ**:
 - Include: アイコンファイルパス
 - ForegroundFile: フォアグラウンドファイルパス（オプション）
 - Color: 背景色
+
+**iOS固有の設定**:
+- XSAppIconAssets: Assets.xcassetsのアイコンセット参照
+- 高解像度アイコン生成のためのSVG品質設定
 
 ### 3. スプラッシュスクリーンコンポーネント
 **責任**: カスタムスプラッシュスクリーンの生成と表示
@@ -80,10 +98,22 @@ Resources/
 </ItemGroup>
 ```
 
+### iOS固有の設定（Info.plist）
+```xml
+<key>XSAppIconAssets</key>
+<string>Assets.xcassets/appicon.appiconset</string>
+```
+
 ### リソースファイル仕様
-- **アイコンファイル**: SVG形式、推奨サイズ 512x512px
+- **アイコンファイル**: SVG形式、推奨サイズ 512x512px（高解像度対応のため）
 - **スプラッシュファイル**: SVG形式、アスペクト比を考慮したデザイン
 - **色指定**: 16進数カラーコード (#RRGGBB形式)
+
+### iOS Retina Display対応アイコンサイズ
+- iPhone 8 (Retina): 120x120px (@2x)
+- iPhone Plus/X以降: 180x180px (@3x)
+- iPad Pro: 167x167px (@2x)
+- iPad/iPad mini: 152x152px (@2x)
 
 ## エラーハンドリング
 
@@ -124,7 +154,8 @@ Resources/
    - スプラッシュスクリーンの表示タイミング確認
 
 2. **iOS**:
-   - アプリアイコンの表示確認
+   - アプリアイコンの表示確認（特にRetina Display対応）
+   - iPhone 8などのRetina Displayデバイスでの高解像度アイコン表示確認
    - 異なるデバイスサイズでの表示確認
    - Launch Screenの表示確認
 
@@ -136,6 +167,7 @@ Resources/
 ### 検証項目
 - MacCatalystが対象から除外されていることの確認
 - カスタムアイコンが各プラットフォームで正しく表示されること
+- iPhone 8などのRetina Displayデバイスで高解像度アイコンが表示されること
 - カスタムスプラッシュスクリーンが適切なタイミングで表示されること
 - ビルドプロセスがエラーなく完了すること
 - 生成されたリソースが適切なサイズと形式であること
@@ -156,3 +188,8 @@ Resources/
 - 将来的な新プラットフォーム対応
 - 追加ブランディング要素への対応
 - 動的リソース変更への対応
+
+### iOS固有の考慮事項
+- Retina Display対応のための高解像度アイコン生成
+- SVGからPNGへの変換品質の最適化
+- アセットカタログの適切な構成
